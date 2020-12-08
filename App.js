@@ -1,15 +1,27 @@
 import { StatusBar } from 'expo-status-bar';
-import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import React, {useState} from 'react';
+import { Button, StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native';
+
 
 export default function App() {
+  {/* Make the state that holds the amount of cookies */}
+  const [cookieCount, modifyCookieCount] = useState(0)
   
   return (
     <View style={styles.container}>
-      <Text class='pliptekst' onPress = {plip}>{this.state.myText}</Text>
+      <Text>{cookieCount}</Text>
+      {/* TouchableOpacity is needed to make use of Onpress prop */} 
+      <TouchableOpacity onPress = {plip}>
+        <Image style={styles.image} source={require('./images/cookie.png')}/>
+      </TouchableOpacity>\
       <StatusBar style="auto" />
     </View>
   );
+
+  function plip(){
+    {/* Add a cookie */}
+    modifyCookieCount(cookieCount+1)
+  }
   
 }
 
@@ -19,11 +31,15 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'center',
+    overflow: 'visible',
   },
+
+  image: {
+    width: 50,
+    height: 50,
+    resizeMode: 'contain' },
 });
 
-function plip(){
-  document.getElementsByClassName('pliptekst').setState({pliptekst: 'plip'})
-}
+
 
 
