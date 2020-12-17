@@ -1,3 +1,8 @@
+// zuja: welkom op stackoverflow NSsem ;-)
+// Eigenlijk mis ik een docje die aangeeft waar je mee bezig bent en hoe de app werkt.
+// Wat is je doel met deze app?
+// app gestart met: yarn add expo // deze had ik nodig om .expo en node_modules misten
+// en daarna: yarn web of npm start
 import { StatusBar } from 'expo-status-bar';
 import React, {useState,useEffect} from 'react';
 import { Button, StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native';
