@@ -4,7 +4,8 @@ import { Button, StyleSheet, Text, View, Image, TouchableOpacity } from 'react-n
 export default class Purchasables extends React.Component{
     
     render(){
-       return     this.props.count >= this.props.cost ?  <Button onPress = {this.props.addPurchase.bind(this, this.props.cost, this.props.type)} title={this.props.title + " Kost: " + this.props.cost}></Button>:
+       return this.props.count >= this.props.cost ? 
+         <Button onPress = {this.props.addPurchase.bind(this, this.props.cost, this.props.type)} title={this.props.title + " Kost: " + this.props.cost}></Button>:
        null
 
     }

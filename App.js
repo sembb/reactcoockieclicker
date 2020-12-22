@@ -13,8 +13,6 @@ export default function App(props) {
   const [cookieCount, modifyCookieCount] = useState(0)
   const [costCount, modifyCostCount] = useState(10)
   const [costCountClick, modifyCostCountClick] = useState(10)
-
-  
   
   {/* If the cookieautocount is updated, activate the counter that adds a cookie to the bonuscookie every 1 second. */}
   useEffect(() => {
@@ -25,7 +23,6 @@ export default function App(props) {
   }, [cookieAutoCount]);
 
   function autoCookie(){
-    console.log(boostStart);
     if(boostStart == true){
     modifyCookieAutoCount(cookieAutoCount+1);
     }
@@ -33,12 +30,16 @@ export default function App(props) {
 
     {/* When a purchase is made, subtract the cost of that purchase, then apply the bonusses for that purchase. */}
   function addPurchase(cost, type){
+    {/* If the type of the purchase is a perSecBoost, subtract the cost of the upgrade, make the next upgrade more expensive,
+    and decrease the amount of time it takes for a cookie to be added, then start the per second booster. */}
     if(type == "perSecBoost"){
     modifyCookieCount(cookieCount-cost)
-    modifyCostCount(costCount+10);
-    perSecBoost = perSecBoost*0.85;
-    console.log(perSecBoost);
+    modifyCostCount(Math.round(costCount*1.5));
+    perSecBoost = perSecBoost*0.88;
     boostStart = true;
+
+    {/* If the type of the purchase is a perClickBoost, subtract the cost of the purchase, then multiply the cost of the next upgrade and
+    increase the amount of cookies you get per click with 1 */}
     }else if(type == "perClickBoost"){
       modifyCookieCount(cookieCount-cost)
       modifyCostCountClick(costCountClick*2);
@@ -48,6 +49,12 @@ export default function App(props) {
   }
   
   return (
+    /* Echo's the app, the Purchasables tag is the purchasables.js component. This is a flexible component i made, you can give it some props
+    and the component will handle the rest:
+    Type: (perSecBoost, perClickBoost) This determines the type of the purchasable, see the addPurchase function.
+    Count: Passes the cookieCount state to the component.
+    Title: Give the purchasable a name.
+    Cost: Pass the cost, in this case the cost is variable because it will kep rising. */
     <View style={styles.container}>
       <Text>Cookiebonus: {cookieAutoCount}</Text>
       <Text>Totale Cookies: {cookieCount}</Text>
@@ -67,7 +74,6 @@ export default function App(props) {
     modifyCookieAutoCount(cookieAutoCount - cookieAutoCount)
   }
 
-  
 }
 
 const styles = StyleSheet.create({
