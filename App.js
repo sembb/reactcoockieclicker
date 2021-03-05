@@ -6,6 +6,7 @@ import Purchasables from './Purchasables';
 var boostStart = false;
 var perSecBoost = 1000;
 var perClickBoost = 1;
+var cookieBounceCount = 0;
 
 export default function App(props) {
   {/* Make the state that holds the amount of clicked cookies, automated cookies. The cost of an upgrade, and the cookies you get per click. */}
@@ -14,22 +15,40 @@ export default function App(props) {
   const [costCount, modifyCostCount] = useState(10)
   const [costCountClick, modifyCostCountClick] = useState(10)
 
-  const bottomref = useRef(new Animated.Value(50)).current;
-  const leftref = useRef(new Animated.Value(0)).current;
+  const [elementArray,setElementArray] = useState([]);
+  
   const cookieBounce = () => {
+    cookieBounceCount++;
+    var bottompos = new Animated.Value(50);
+    var leftpos = new Animated.Value(50);
     // Will change fadeAnim value to 1 in 5 seconds
+    setElementArray(elementArray.concat(<Animated.Image style={[styles.bouncingcookie, {left: leftpos.interpolate({
+      inputRange: [0, 100],
+      outputRange: ['0%', '100%']
+    }), bottom: bottompos.interpolate({
+      inputRange: [0, 100],
+      outputRange: ['0%', '100%']
+    })}]} source={require('./images/cookie.png')}></Animated.Image>))
+    console.log(elementArray);
     Animated.parallel([
-      Animated.timing(bottomref, {
-          toValue: 0,
-          duration: 300
+      Animated.timing(bottompos, {
+          toValue: getRandomArbitrary(-100, 100),
+          duration: 500
       }),
-      Animated.timing(leftref, {
-          toValue: 60,
-          duration: 300
+      Animated.timing(leftpos, {
+          toValue: getRandomArbitrary(-100, 100),
+          duration: 500
       })
     ]).start(() => {
 
     });
+    if(cookieBounceCount > 10){
+      var remaining = elementArray;
+      remaining.splice(0, 1);
+      console.log(remaining);
+      setElementArray(remaining);
+    }
+    
   };
   
   {/* If the cookieautocount is updated, activate the counter that adds a cookie to the bonuscookie every 1 second. */}
@@ -65,6 +84,10 @@ export default function App(props) {
     }
 
   }
+
+  function getRandomArbitrary(min, max) {
+    return Math.random() * (max - min) + min;
+  }
   
   return (
     /* Echo's the app, the Purchasables tag is the purchasables.js component. This is a flexible component i made, you can give it some props
@@ -74,11 +97,12 @@ export default function App(props) {
     Title: Give the purchasable a name.
     Cost: Pass the cost, in this case the cost is variable because it will kep rising. */
     <View style={styles.container}>
+      { elementArray }
       <Text>Cookiebonus: {cookieAutoCount}</Text>
       <Text>Totale Cookies: {cookieCount}</Text>
       {/* TouchableOpacity is needed to make use of Onpress prop */} 
-      <Animated.Image style={[styles.bouncingcookie, {left: leftref, bottom: bottomref}]} source={require('./images/cookie.png')}></Animated.Image>
-      <TouchableOpacity onPress = {addCookie, cookieBounce}>
+      <TouchableOpacity onPress = {() => {addCookie(); cookieBounce();}}>
+        
         <Image style={styles.image} source={require('./images/cookie.png')}/>
       </TouchableOpacity>
         <Purchasables type="perSecBoost" addPurchase={addPurchase} count={cookieCount} title='Koekjesslaaf' cost={costCount}/>
@@ -101,8 +125,9 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'center',
-    overflow: 'visible',
+    overflow: 'hidden',
   },
+  
 
   image: {
     marginTop: 10,
