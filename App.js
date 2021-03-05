@@ -1,6 +1,6 @@
 import { StatusBar } from 'expo-status-bar';
-import React, {useState,useEffect} from 'react';
-import { Button, StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native';
+import React, {useState,useEffect,useRef} from 'react';
+import { Button, StyleSheet, Text, View, Image, TouchableOpacity, Animated } from 'react-native';
 import Purchasables from './Purchasables';
 
 var boostStart = false;
@@ -13,6 +13,24 @@ export default function App(props) {
   const [cookieCount, modifyCookieCount] = useState(0)
   const [costCount, modifyCostCount] = useState(10)
   const [costCountClick, modifyCostCountClick] = useState(10)
+
+  const bottomref = useRef(new Animated.Value(50)).current;
+  const leftref = useRef(new Animated.Value(0)).current;
+  const cookieBounce = () => {
+    // Will change fadeAnim value to 1 in 5 seconds
+    Animated.parallel([
+      Animated.timing(bottomref, {
+          toValue: 0,
+          duration: 300
+      }),
+      Animated.timing(leftref, {
+          toValue: 60,
+          duration: 300
+      })
+    ]).start(() => {
+
+    });
+  };
   
   {/* If the cookieautocount is updated, activate the counter that adds a cookie to the bonuscookie every 1 second. */}
   useEffect(() => {
@@ -59,7 +77,8 @@ export default function App(props) {
       <Text>Cookiebonus: {cookieAutoCount}</Text>
       <Text>Totale Cookies: {cookieCount}</Text>
       {/* TouchableOpacity is needed to make use of Onpress prop */} 
-      <TouchableOpacity onPress = {addCookie}>
+      <Animated.Image style={[styles.bouncingcookie, {left: leftref, bottom: bottomref}]} source={require('./images/cookie.png')}></Animated.Image>
+      <TouchableOpacity onPress = {addCookie, cookieBounce}>
         <Image style={styles.image} source={require('./images/cookie.png')}/>
       </TouchableOpacity>
         <Purchasables type="perSecBoost" addPurchase={addPurchase} count={cookieCount} title='Koekjesslaaf' cost={costCount}/>
@@ -90,6 +109,14 @@ const styles = StyleSheet.create({
     width: 100,
     height: 100,
     resizeMode: 'contain' },
+  
+  bouncingcookie: {
+    position: 'absolute',
+    left: '50%',
+    bottom: '50%',
+    width: 50,
+    height: 50,
+  },
 });
 
 
