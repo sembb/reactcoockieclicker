@@ -1,6 +1,6 @@
 import { StatusBar } from 'expo-status-bar';
 import React, {useState,useEffect,useRef} from 'react';
-import { Button, StyleSheet, Text, View, Image, TouchableOpacity, Animated } from 'react-native';
+import { Button, StyleSheet, Text, View, Image, TouchableOpacity, Animated, Easing } from 'react-native';
 import Purchasables from './Purchasables';
 
 var boostStart = false;
@@ -16,6 +16,16 @@ export default function App(props) {
   const [costCountClick, modifyCostCountClick] = useState(10)
 
   const [elementArray,setElementArray] = useState([]);
+  const rotateAnim = useRef(new Animated.Value(0)).current;
+
+  const rotation = () => {
+    Animated.timing(rotateAnim, {
+      toValue: 1,
+      duration: 300,
+      easing: Easing.linear,
+      
+    }).start(rotateAnim.setValue(0));
+  }
   
   const cookieBounce = () => {
     cookieBounceCount++;
@@ -42,7 +52,7 @@ export default function App(props) {
     ]).start(() => {
 
     });
-    if(cookieBounceCount > 10){
+    if(elementArray.length > 50){
       var remaining = elementArray;
       remaining.splice(0, 1);
       console.log(remaining);
@@ -89,6 +99,7 @@ export default function App(props) {
     return Math.random() * (max - min) + min;
   }
   
+  
   return (
     /* Echo's the app, the Purchasables tag is the purchasables.js component. This is a flexible component i made, you can give it some props
     and the component will handle the rest:
@@ -101,12 +112,17 @@ export default function App(props) {
       <Text>Cookiebonus: {cookieAutoCount}</Text>
       <Text>Totale Cookies: {cookieCount}</Text>
       {/* TouchableOpacity is needed to make use of Onpress prop */} 
-      <TouchableOpacity onPress = {() => {addCookie(); cookieBounce();}}>
+      <TouchableOpacity onPress = {() => {addCookie(); cookieBounce(); rotation();}}>
         
-        <Image style={styles.image} source={require('./images/cookie.png')}/>
+        <Animated.Image style={[styles.image, {transform: [{rotate: rotateAnim.interpolate({
+      inputRange: [0, 1],
+      outputRange: ['0deg', '360deg']
+    })}]}]} source={require('./images/cookie.png')}/>
       </TouchableOpacity>
+      <View style={styles.btngr}>
         <Purchasables type="perSecBoost" addPurchase={addPurchase} count={cookieCount} title='Koekjesslaaf' cost={costCount}/>
         <Purchasables type="perClickBoost" addPurchase={addPurchase} count={cookieCount} title='Clickboost' cost={costCountClick}/>
+      </View>
       <StatusBar style="auto" />
     </View>
   );
@@ -120,6 +136,12 @@ export default function App(props) {
 }
 
 const styles = StyleSheet.create({
+  btngr: {
+    position: 'absolute',
+    left: 10,
+    top: 10,
+  },
+
   container: {
     flex: 1,
     backgroundColor: '#fff',
@@ -128,7 +150,6 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
   },
   
-
   image: {
     marginTop: 10,
     width: 100,
@@ -142,6 +163,7 @@ const styles = StyleSheet.create({
     width: 50,
     height: 50,
   },
+
 });
 
 
