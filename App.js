@@ -1,6 +1,6 @@
 import { StatusBar } from 'expo-status-bar';
 import React, {useState,useEffect,useRef} from 'react';
-import { Button, StyleSheet, Text, View, Image, TouchableOpacity, Animated, Easing } from 'react-native';
+import { Button, StyleSheet, Text, View, Image, TouchableOpacity, Animated, Easing, ImageBackground } from 'react-native';
 import Purchasables from './Purchasables';
 
 var boostStart = false;
@@ -108,22 +108,30 @@ export default function App(props) {
     Title: Give the purchasable a name.
     Cost: Pass the cost, in this case the cost is variable because it will kep rising. */
     <View style={styles.container}>
+      <ImageBackground source={require('./images/1751302.jpg')} style={styles.backImg}>
       { elementArray }
-      <Text>Cookiebonus: {cookieAutoCount}</Text>
-      <Text>Totale Cookies: {cookieCount}</Text>
-      {/* TouchableOpacity is needed to make use of Onpress prop */} 
-      <TouchableOpacity onPress = {() => {addCookie(); cookieBounce(); rotation();}}>
-        
-        <Animated.Image style={[styles.image, {transform: [{rotate: rotateAnim.interpolate({
-      inputRange: [0, 1],
-      outputRange: ['0deg', '360deg']
-    })}]}]} source={require('./images/cookie.png')}/>
-      </TouchableOpacity>
       <View style={styles.btngr}>
-        <Purchasables type="perSecBoost" addPurchase={addPurchase} count={cookieCount} title='Koekjesslaaf' cost={costCount}/>
-        <Purchasables type="perClickBoost" addPurchase={addPurchase} count={cookieCount} title='Clickboost' cost={costCountClick}/>
-      </View>
-      <StatusBar style="auto" />
+            <Purchasables style={styles.buttonb} type="perSecBoost" addPurchase={addPurchase} count={cookieCount} title='Koekjesslaaf' cost={costCount}/>
+            <Purchasables type="perClickBoost" addPurchase={addPurchase} count={cookieCount} title='Clickboost' cost={costCountClick}/>
+          </View>
+        <View style={{position:'absolute',left:'50%',marginLeft:-50,top:'50%',marginTop:-50, display:'flex', alignItems: 'center'}}>
+          
+          <View style={styles.countText}>
+            <Text style={styles.countTextPad}>Cookiebonus: {cookieAutoCount}</Text>
+            <Text style={styles.countTextPad}>Totale Cookies: {cookieCount}</Text>
+          </View>
+          {/* TouchableOpacity is needed to make use of Onpress prop */} 
+          <TouchableOpacity onPress = {() => {addCookie(); cookieBounce(); rotation();}}>
+            
+            <Animated.Image style={[styles.image, {transform: [{rotate: rotateAnim.interpolate({
+            inputRange: [0, 1],
+            outputRange: ['0deg', '360deg']
+            })}]}]} source={require('./images/cookie.png')}/>
+          </TouchableOpacity>
+
+          <StatusBar style="auto" />
+        </View>
+      </ImageBackground>
     </View>
   );
 
@@ -142,12 +150,31 @@ const styles = StyleSheet.create({
     top: 10,
   },
 
+  countText: {
+    backgroundColor: 'rgba(196, 108, 37, 0.70)',
+    borderRadius: 4,
+  },
+
+  backImg: {
+    position:'absolute', width: '100%', height: '100%'
+  },
+
+  countTextPad: {
+    padding: 10,
+    fontSize: 20,
+    color: 'white',
+  },
+
   container: {
     flex: 1,
     backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'center',
     overflow: 'hidden',
+  },
+
+  buttonb: {
+    marginBottom: 10,
   },
   
   image: {
@@ -162,6 +189,9 @@ const styles = StyleSheet.create({
     bottom: '50%',
     width: 50,
     height: 50,
+    marginBottom: -100,
+    marginLeft: -25,
+
   },
 
 });
